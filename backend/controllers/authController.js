@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import catchAsync from '../utils/catchAsync.js';
-import User from '../models/userModel.js';
+import User from '../models/authModel.js';
 
 const hashPassword = async (pass) => {
     return await bcrypt.hash(pass, 10);
@@ -37,7 +37,7 @@ const createSendToken = (user, statusCode, res, expiryTime) => {
     });
 };
 
-export const signup = catchAsync(async (req, res) => {
+export const register = catchAsync(async (req, res) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {

@@ -7,3 +7,5 @@ const router = express.Router();
 router.route('/create').post(protect, createVaccine);
 router.route('/').get(protect, getVaccines);
 router.route('/:id').get(protect, getVaccineById).put(protect, updateVaccine).delete(protect, deleteVaccine);
+
+export default router;

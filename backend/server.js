@@ -3,7 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
-import appointmentRoutes from './routes/authRoutes.js'
+import appointmentRoutes from './routes/appointmentRoutes.js';
 import vaccineRoutes from './routes/vaccineRoutes.js';
 
 dotenv.config();
@@ -11,11 +11,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000; 
 
-/* // Middleware
 app.use(cors({
   origin: "http://localhost:5173",
 }));
-app.use(express.json());  */
+app.use(express.json()); 
 
 // Routes
 app.use("/auth", authRoutes);
@@ -33,6 +32,8 @@ app.use((err, req, res, next) => {
       stack: err.stack,
     });
 });
+
+console.log("Connecting to DB using URI:", process.env.URI);
 
 // Database Connection
 mongoose.connect(process.env.URI, {

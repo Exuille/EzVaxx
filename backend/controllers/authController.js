@@ -38,12 +38,12 @@ const createSendToken = (user, statusCode, res, expiryTime) => {
 };
 
 export const register = catchAsync(async (req, res) => {
-    const { username, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
-    if (!username || !email || !password) {
+    if (!name || !email || !password || !role) {
         return res.status(400).json({
             status: "fail",
-            message: "Please provide username, email and password"
+            message: "Please provide name, email and password"
         });
     }
 
@@ -54,11 +54,11 @@ export const register = catchAsync(async (req, res) => {
         });
     }
 
-    let existingUser = await User.findOne({ username });
+    let existingUser = await User.findOne({ name });
     if (existingUser) {
         return res.status(409).json({
             status: "fail",
-            message: "User already exists with provided username!"
+            message: "User already exists with provided name!"
         });
     }
 
@@ -71,25 +71,25 @@ export const register = catchAsync(async (req, res) => {
     }
 
     const hashedPassword = await hashPassword(password);
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const newUser = await User.create({ name, email, password: hashedPassword, role });
 
     createSendToken(newUser, 201, res);
 });
 
 export const login = catchAsync(async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password) {
         return res.status(400).json({
             status: "fail",
-            message: "Please provide username/email and password"
+            message: "Please provide email and password"
         });
     }
 
-    let user = await User.findOne({ email: username });
-    if (!user) {
+    let user = await User.findOne({email});
+/*     if (!user) {
         user = await User.findOne({ username });
-    }
+    } */
     if (!user) {
         return res.status(404).json({
             status: "fail",
@@ -133,8 +133,24 @@ export const fetchUser = catchAsync(async (req, res) => {
         status: "success",
         data: {
             id: user._id,
-            username: user.username,
+            name: user.name,
             email: user.email 
+        }
+    });
+});
+
+export const fetchAllUsers = catchAsync(async (req, res) => {
+    const users = await User.find({}).select("-password -__v");
+    if (!users) {
+        return res.status(404).json({
+            status: "fail",
+            message: "No users found"
+        });
+    }
+    res.status(200).json({
+        status: "success",
+        data: {
+            users
         }
     });
 });

@@ -6,14 +6,19 @@ const AppointmentSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    vaccine:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Vaccine',
+        required: true
+    },
     dateTime: {
         type: Date,
         required: true
     },
     status: {
         type: String,
-        enum: ['scheduled', 'completed', 'canceled'],
-        default: 'scheduled'
+        enum: ['pending', 'completed', 'cancelled'],
+        default: 'pending'
     },
 }, { timestamps: true });
 

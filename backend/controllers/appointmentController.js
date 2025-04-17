@@ -1,8 +1,9 @@
 import Appointment from '../models/appointmentModel.js';
+import Vaccine from '../models/vaccineModel.js';
 import catchAsync from '../utils/catchAsync.js';
 
 export const createAppointment = catchAsync(async (req, res) => {
-    const { datetime } = req.body;
+    const { vaccine, dateTime } = req.body;
     const patient = req.user?.id;
 
     if (!patient) {
@@ -12,14 +13,37 @@ export const createAppointment = catchAsync(async (req, res) => {
         });
     }
 
-    if (!datetime) {
+    if (!dateTime) {
         return res.status(400).json({
             status: "fail",
             message: "Please enter a date first"
         });
     }
 
-    const newAppointment = await Appointment.create({ patient, datetime });
+    if (!vaccine) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Please select a vaccine"
+        });
+    }
+
+    const existingVaccine = await Vaccine.findOne({ name: vaccine });
+    if (!existingVaccine) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Vaccine not found',
+        });
+    }
+
+    const existingAppointment = await Appointment.findOne({ dateTime, status: 'pending' });
+    if (existingAppointment) {
+        return res.status(409).json({
+            status: "fail",
+            message: "This time slot is already taken. Please choose another."
+        });
+    }
+
+    const newAppointment = await Appointment.create({ patient, vaccine: existingVaccine._id, dateTime, status: 'pending' });
 
     res.status(201).json({
         status: "success",
@@ -46,6 +70,15 @@ export const cancelAppointment = catchAsync(async (req, res) => {
     res.status(200).json({ status: 'success', data: { appointment } });
 });
 
+export const getMyAppointments = catchAsync(async (req, res) => {
+    const appointments = await Appointment.find({ patient: req.user.id });
+
+    if (!appointments) {
+        return res.status(404).json({ status: 'fail', message: 'No appointments found' });
+    }
+
+    res.status(200).json({ status: 'success', results: appointments.length, data: { appointments } });
+});
 
 export const getAppointments = catchAsync(async (req, res) => {
     let appointments;

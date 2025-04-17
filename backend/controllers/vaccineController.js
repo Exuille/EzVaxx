@@ -1,7 +1,7 @@
 import Vaccine from '../models/vaccineModel.js';
 import catchAsync from '../utils/catchAsync.js';
 
-const createVaccine = catchAsync(async (req, res) => {
+export const createVaccine = catchAsync(async (req, res) => {
     const { name, type, manufacturer, stock, expirationDate } = req.body;
 
     if (!name || !type || !manufacturer || !stock || !expirationDate) {
@@ -20,7 +20,7 @@ const createVaccine = catchAsync(async (req, res) => {
     });
 });
 
-const getVaccines = catchAsync(async (req, res) => {
+export const getVaccines = catchAsync(async (req, res) => {
     const vaccines = await Vaccine.find();
     res.status(200).json({
         status: 'success',
@@ -31,7 +31,7 @@ const getVaccines = catchAsync(async (req, res) => {
     });
 });
 
-const getVaccineById = catchAsync(async (req, res) => {
+export const getVaccineById = catchAsync(async (req, res) => {
     const vaccine = await Vaccine.findById(req.params.id);
     if (!vaccine) {
         return res.status(404).json({
@@ -48,7 +48,7 @@ const getVaccineById = catchAsync(async (req, res) => {
     });
 });
 
-const updateVaccine = catchAsync(async (req, res) => {
+export const updateVaccine = catchAsync(async (req, res) => {
     const vaccine = await Vaccine.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true,
@@ -69,7 +69,7 @@ const updateVaccine = catchAsync(async (req, res) => {
     });
 });
 
-const deleteVaccine = catchAsync(async (req, res) => {
+export const deleteVaccine = catchAsync(async (req, res) => {
     const vaccine = await Vaccine.findByIdAndDelete(req.params.id);
     if (!vaccine) {
         return res.status(404).json({

@@ -14,7 +14,6 @@ export const createVaccine = catchAsync(async (req, res) => {
     const existingVaccine = await Vaccine.findOne({ name, type, expirationDate });
   
     if (existingVaccine) {
-      // Update stock
       existingVaccine.stock += Number(stock); // make sure stock is treated as a number
       await existingVaccine.save();
   

@@ -1,8 +1,10 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import appointmentRoutes from './routes/authRoutes.js'
+import vaccineRoutes from './routes/vaccineRoutes.js';
 
 dotenv.config();
 
@@ -18,7 +20,7 @@ app.use(express.json());  */
 // Routes
 app.use("/auth", authRoutes);
 app.use("/appointment", appointmentRoutes)
-
+app.use("/vaccine", vaccineRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
+import appointmentRoutes from './routes/authRoutes.js'
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());  */
 
 // Routes
 app.use("/auth", authRoutes);
+app.use("/appointment", appointmentRoutes)
 
 
 // Error handling middleware
